@@ -45,6 +45,8 @@ class FractionalLaplacianAproximation(object):
         return w_j_params
 
     def get_value_at(self, index_of_point):
+        if self.num_of_steps <= 0:
+            return self.get_value_singular(index_of_point)
         return (self.get_value_singular(index_of_point)
         + self.get_value_tail(index_of_point))
 

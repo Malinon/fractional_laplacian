@@ -24,8 +24,8 @@ def exact_solution_exp_minus_squared_at_0(alpha):
 def analitic_sol_fun(x):
     if x == 0:
         return 0
-    else:
-        return ss.erf(x) * math.sqrt(math.pi) + (math.exp(-x**2.0) - 1.0)/x
+    
+    return ss.erf(x) * math.sqrt(math.pi) + (math.exp(-x ** 2.0) - 1.0) / x
 
 #Integral for Laplacian for exp(-x^2) in 0, but on limited domain
 def analitic_sol_val(start, end):

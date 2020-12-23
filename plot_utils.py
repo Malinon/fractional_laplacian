@@ -6,6 +6,22 @@ from utils_func import kahan_sum
 from utils_func import GFunction
 
 
+
+def plot_6_1(L_max, h, file_name, fun, anal_sol):
+    args = [h * i for i in range(1, int(L_max / h))]
+    abs_errors = np.zeros(len(args))
+    for i, arg in enumerate(args):
+        comp_s = FractionalLaplacianAproximation(1.0,
+        h, arg, fun, kahan_sum, GFunction(1.0, h))
+        abs_errors[i] = abs(comp_s.get_value_at(0.0)
+         / comp_s.C_ALPHA_1- anal_sol(0, arg) * 2.0) / (anal_sol(0, arg) * 2.0)
+        if abs_errors[i]  > h:
+            print("Allert ", arg)
+    
+    df = pd.DataFrame(data={'x': args, "y": abs_errors})
+    p = ggplot() + geom_line(data=df, mapping=aes(df['x'],df['y']))
+    p.save(file_name)
+
 def plot_compare(L, h, alpha, file_name, fun, exact_solution):
     args = np.linspace(-L, L)
     vals = np.zeros(len(args))

@@ -1,4 +1,40 @@
 import math
+import scipy.special as ss
+
+def kahan_sum(components):
+    sum_val = components[0]
+    correct_val = 0.0
+    for i in range(1, len(components)):
+        y = components[i] - correct_val
+        t = sum_val + y
+        correct_val = (t - sum_val) - y
+        sum_val = t
+
+    return sum_val
+
+# Function from 6.1
+def exp_minus_squared(x):
+    return math.exp(-(x ** 2.0))
+
+# Exact fractional laplacian for #6.1
+def exact_solution_exp_minus_squared_at_0(alpha):
+    return (2.0 ** alpha) * math.gamma((1.0 + alpha) / 2.0) / math.sqrt(math.pi)
+
+#Analitycal sol Laplacian for exp(-x^2) in 0, but on limited domain
+def analitic_sol_fun(x):
+    if x == 0:
+        return 0
+    else:
+        return ss.erf(x) * math.sqrt(math.pi) + (math.exp(-x**2.0) - 1.0)/x
+
+#Integral for Laplacian for exp(-x^2) in 0, but on limited domain
+def analitic_sol_val(start, end):
+    return analitic_sol_fun(end) - analitic_sol_fun(start)
+
+#Laplacian of  (1 + x^2)^((alpha-1)/2)
+def fun_2_smooth_lap_accurate(x, alpha):
+    return ((2**alpha) * math.gamma((1.0 + alpha) / 2.0)  *
+    ((1 + x ** 2) ** (-(alpha + 1) / 2))) / math.gamma((1.0 - alpha) / 2.0)
 
 class GFunction:
     # G will be called with only non-negative args, so abs was deleted

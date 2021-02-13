@@ -6,7 +6,7 @@ class FractionalLaplacianAproximation(object):
 
     def __init__(self, alpha, h, L, func, sum_method, g_func_gen, dim = 1):
         self.H = h
-        self.num_of_steps = (L / h) - 1
+        self.num_of_steps = (L / h) - 1 # Because of float number of steps can be wrong
         self.FUNC = func
         self.ALPHA = alpha
         self.DIM = dim
@@ -25,14 +25,14 @@ class FractionalLaplacianAproximation(object):
 
     def calculate_c_alpha_1(self, alpha, dim):
         return (alpha * math.gamma( (alpha + dim) / 2.0 ) * (
-            2 ** (alpha - 1))) / ((math.pi ** (dim / 2))
-            * math.gamma((2 - alpha) / 2))
+            2 ** (alpha - 1.0))) / ((math.pi ** (dim / 2.0))
+            * math.gamma((2.0 - alpha) / 2.0))
 
     def calculate_w_j_params(self):
         w_j_params = np.zeros(int(self.num_of_steps))
-        w_j_params[0] = (1.0 / (2 - self.ALPHA) - self.G_SECOND_DERIVATIVE_AT_1 -
-        (self.G_DERIVATIVE(3.0) + 3 * self.G_DERIVATIVE(1.0)) / 2 +
-        self.G_FUNCTION(3) - self.G_FUNCTION(1))
+        w_j_params[0] = (1.0 / (2.0 - self.ALPHA) - self.G_SECOND_DERIVATIVE_AT_1 -
+        (self.G_DERIVATIVE(3.0) + 3 * self.G_DERIVATIVE(1.0)) / 2.0 +
+        self.G_FUNCTION(3.0) - self.G_FUNCTION(1.0))
 
         for j in range(2, int(self.num_of_steps) + 1):
             if j % 2 == 0 :
@@ -44,12 +44,14 @@ class FractionalLaplacianAproximation(object):
 
         return w_j_params
 
+# Get Fractional Laplacian value at given point
     def get_value_at(self, index_of_point):
         if self.num_of_steps <= 0:
             return self.get_value_singular(index_of_point)
         return (self.get_value_singular(index_of_point)
         + self.get_value_tail(index_of_point))
 
+# Calculate singular part of integral
     def get_value_singular(self, index_of_point):
         u_i = self.FUNC(self.H * index_of_point)
         u_i_next = self.FUNC(self.H * (index_of_point + 1))
@@ -57,6 +59,7 @@ class FractionalLaplacianAproximation(object):
         singu =-self.C_ALPHA_1 * (self.H ** (-self.ALPHA)) * (
             u_i_next - 2.0 * u_i + u_i_prev) / (2.0 - self.ALPHA)
         return singu
+
 
     def func_at(self, index_of_point):
         return self.FUNC(index_of_point * self.H)

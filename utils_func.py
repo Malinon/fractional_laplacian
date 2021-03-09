@@ -36,6 +36,31 @@ def fun_2_smooth_lap_accurate(x, alpha):
     return ((2**alpha) * math.gamma((1.0 + alpha) / 2.0)  *
     ((1 + x ** 2) ** (-(alpha + 1) / 2))) / math.gamma((1.0 - alpha) / 2.0)
 
+
+class FFunction:
+    # G will be called with only non-negative args, so abs was deleted
+    def __init__(self, alpha, h):
+        self.ALPHA = alpha
+        self.C_1_ALPHA = -1
+        self.H = h
+
+    def set_C_alpha_1(self, C_ALPHA_1):
+        self.C_1_ALPHA = C_ALPHA_1
+
+    def gen_F_fun(self):
+        if self.ALPHA == 1.0:
+            return lambda t : -math.log(t)
+
+        return lambda t : (t ** (1.0 - self.ALPHA)) / (
+                (self.ALPHA - 1.0) * self.ALPHA)
+
+    def gen_F_derivative_at_1(self):
+        return -1.0 / self.alpha
+
+    # All componenets are mupltiplied by C_1_self.ALPHA / h^alpha
+    def gen_general_multiplication(self):
+        return (self.H ** (-self.ALPHA)) * self.C_1_ALPHA
+
 class GFunction:
     # G will be called with only non-negative args, so abs was deleted
     def __init__(self, alpha, h):
@@ -60,7 +85,7 @@ class GFunction:
         return lambda t:  (t ** (1.0 - self.ALPHA)) / (self.ALPHA * (self.ALPHA - 1.0))
 
     def gen_G_second_derivative_at_1(self):
-        return -1
+        return -1.0 / self.ALPHA
 
     # All componenets are mupltiplied by C_1_self.ALPHA / h^alpha
     def gen_general_multiplication(self):

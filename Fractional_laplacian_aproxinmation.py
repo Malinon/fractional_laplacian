@@ -2,9 +2,9 @@ import math
 import numpy as np
 
 
-class FractionalLaplacianAproximation(object):
+class FractionalLaplacianAproximationBase(object):
 
-    def __init__(self, alpha, h, L, func, sum_method, g_func_gen, dim = 1):
+    def __init__(self, alpha, h, L, func, sum_method, dim = 1):
         self.H = h
         self.num_of_steps = (L / h) - 1 # Because of float number of steps can be wrong
         self.FUNC = func
@@ -12,16 +12,8 @@ class FractionalLaplacianAproximation(object):
         self.DIM = dim
         self.C_ALPHA_1 = self.calculate_c_alpha_1(alpha, dim)
 
-        g_func_gen.set_C_alpha_1(self.C_ALPHA_1)
-
-        self.G_FUNCTION = g_func_gen.gen_G_fun()
-        self.G_DERIVATIVE = g_func_gen.gen_G_fun_derivative()
-        self.G_SECOND_DERIVATIVE_AT_1 = g_func_gen.gen_G_second_derivative_at_1()
-        self.G_GENERAL_MULTI = g_func_gen.gen_general_multiplication()
         self.sum_method = sum_method
 
-        if self.num_of_steps > 0:
-            self.w_j_list = self.calculate_w_j_params()
 
     def calculate_c_alpha_1(self, alpha, dim):
         return (alpha * math.gamma( (alpha + dim) / 2.0 ) * (

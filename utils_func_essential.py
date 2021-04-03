@@ -1,5 +1,10 @@
 import math
-import scipy.special as ss
+
+
+def calculate_c_alpha_1( alpha, dim = 1):
+        return (alpha * math.gamma( (alpha + dim) / 2.0 ) * (
+            2 ** (alpha - 1.0))) / ((math.pi ** (dim / 2.0))
+            * math.gamma((2.0 - alpha) / 2.0))
 
 def kahan_sum(components):
     sum_val = components[0]
@@ -11,31 +16,6 @@ def kahan_sum(components):
         sum_val = t
 
     return sum_val
-
-# Function from 6.1
-def exp_minus_squared(x):
-    return math.exp(-(x ** 2.0))
-
-# Exact fractional laplacian for #6.1
-def exact_solution_exp_minus_squared_at_0(alpha):
-    return (2.0 ** alpha) * math.gamma((1.0 + alpha) / 2.0) / math.sqrt(math.pi)
-
-#Analitycal sol Laplacian for exp(-x^2) in 0, but on limited domain
-def analitic_sol_fun(x):
-    if x == 0:
-        return 0
-    
-    return ss.erf(x) * math.sqrt(math.pi) + (math.exp(-x ** 2.0) - 1.0) / x
-
-#Integral for Laplacian for exp(-x^2) in 0, but on limited domain
-def analitic_sol_val(start, end):
-    return analitic_sol_fun(end) - analitic_sol_fun(start)
-
-#Laplacian of  (1 + x^2)^((alpha-1)/2)
-def fun_2_smooth_lap_accurate(x, alpha):
-    return ((2**alpha) * math.gamma((1.0 + alpha) / 2.0)  *
-    ((1 + x ** 2) ** (-(alpha + 1) / 2))) / math.gamma((1.0 - alpha) / 2.0)
-
 
 class FFunction:
     # G will be called with only non-negative args, so abs was deleted
@@ -55,7 +35,7 @@ class FFunction:
                 (self.ALPHA - 1.0) * self.ALPHA)
 
     def gen_F_derivative_at_1(self):
-        return -1.0 / self.alpha
+        return -1.0 / self.ALPHA
 
     # All componenets are mupltiplied by C_1_self.ALPHA / h^alpha
     def gen_general_multiplication(self):

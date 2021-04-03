@@ -1,4 +1,4 @@
-import math
+from utils_func_essential import calculate_c_alpha_1
 import numpy as np
 
 
@@ -10,31 +10,10 @@ class FractionalLaplacianAproximationBase(object):
         self.FUNC = func
         self.ALPHA = alpha
         self.DIM = dim
-        self.C_ALPHA_1 = self.calculate_c_alpha_1(alpha, dim)
+        self.C_ALPHA_1 = calculate_c_alpha_1(alpha, dim)
 
         self.sum_method = sum_method
 
-
-    def calculate_c_alpha_1(self, alpha, dim):
-        return (alpha * math.gamma( (alpha + dim) / 2.0 ) * (
-            2 ** (alpha - 1.0))) / ((math.pi ** (dim / 2.0))
-            * math.gamma((2.0 - alpha) / 2.0))
-
-    def calculate_w_j_params(self):
-        w_j_params = np.zeros(int(self.num_of_steps))
-        w_j_params[0] = (1.0 / (2.0 - self.ALPHA) - self.G_SECOND_DERIVATIVE_AT_1 -
-        (self.G_DERIVATIVE(3.0) + 3 * self.G_DERIVATIVE(1.0)) / 2.0 +
-        self.G_FUNCTION(3.0) - self.G_FUNCTION(1.0))
-
-        for j in range(2, int(self.num_of_steps) + 1):
-            if j % 2 == 0 :
-                w_j_params[j - 1] = 2 * (self.G_DERIVATIVE(j + 1) + self.G_DERIVATIVE(j - 1) -
-                self.G_FUNCTION(j + 1) + self.G_FUNCTION(j - 1))
-            else:
-                w_j_params[j - 1] = -0.5 * (self.G_DERIVATIVE(j + 2) + 6 * self.G_DERIVATIVE(j)
-                + self.G_DERIVATIVE(j - 2)) + self.G_FUNCTION(j + 2) - self.G_FUNCTION(j - 2)
-
-        return w_j_params
 
 # Get Fractional Laplacian value at given point
     def get_value_at(self, index_of_point):
@@ -70,4 +49,4 @@ class FractionalLaplacianAproximationBase(object):
             index = index + 1
             index_val = index_val + 1
 
-        return self.G_GENERAL_MULTI * (self.sum_method(components_of_sum))
+        return self.GENERAL_MULTI * (self.sum_method(components_of_sum))

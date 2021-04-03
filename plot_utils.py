@@ -1,12 +1,20 @@
 import numpy as np
 import pandas as pd
+import math
 from plotnine import ggplot, aes, geom_point, geom_line
-from Fractional_laplacian_aproxinmation import FractionalLaplacianAproximation
-from utils_func import kahan_sum
-from utils_func import GFunction
+#from Fractional_laplacian_aproxinmation import FractionalLaplacianAproximation
+from utils_func_essential import kahan_sum
+from utils_func_essential import GFunction
 
-
-
+def plot_compare_abs_error_zero(calculator_gen ,correct_fun, alpha, hs, L, file_name):
+    correct_val = correct_fun(x=0, alpha=alpha)
+    calculators = calculator_gen(alpha, L, hs)
+    xs =  [abs(calc.get_value_at(0)  - correct_val) for calc in calculators]
+    df = pd.DataFrame(data={'h': [math.log(h) / math.log(10) for h in hs],
+    "absolute error": xs})
+    p = ggplot() + geom_line(data=df, mapping=aes(df['h'], df['absolute error']))
+    p.save(file_name)
+"""
 def plot_6_1(L_max, h, file_name, fun, anal_sol):
     args = [h * i for i in range(1, int(L_max / h))]
     abs_errors = np.zeros(len(args))
@@ -41,3 +49,4 @@ def plot_compare(L, h, alpha, file_name, fun, exact_solution):
     p = ggplot() + geom_line(data=df, mapping=aes(df['x'],df['y'])) + geom_point(data=df2,
     mapping=aes(df2['x'],df2['y']))
     p.save(file_name)
+"""

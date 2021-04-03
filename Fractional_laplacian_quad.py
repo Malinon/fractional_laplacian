@@ -1,12 +1,11 @@
-from Fractional_laplacian_aproxinmation import FractionalLaplacianAproximation
-from utils_func import GFunction
+from Fractional_laplacian_aproxinmation import FractionalLaplacianAproximationBase
+from utils_func_essential import GFunction
 import numpy as np
 
-class FractionalLaplacianAproximationQuad(FractionalLaplacianAproximation):
+class FractionalLaplacianAproximationQuad(FractionalLaplacianAproximationBase):
 
     def __init__(self, alpha, h, L, func, sum_method, dim = 1):
-        super(FractionalLaplacianAproximationQuad,self).__init__(self, alpha, h
-        , L, func, sum_method,  dim)
+        super(FractionalLaplacianAproximationQuad,self).__init__(self, alpha, h, L, func, sum_method,  dim)
 
         g_func_gen = GFunction(alpha, h)
         g_func_gen.set_C_alpha_1(self.C_ALPHA_1)
@@ -14,7 +13,7 @@ class FractionalLaplacianAproximationQuad(FractionalLaplacianAproximation):
         self.G_FUNCTION = g_func_gen.gen_G_fun()
         self.G_DERIVATIVE = g_func_gen.gen_G_fun_derivative()
         self.G_SECOND_DERIVATIVE_AT_1 = g_func_gen.gen_G_second_derivative_at_1()
-        self.G_GENERAL_MULTI = g_func_gen.gen_general_multiplication()
+        self.GENERAL_MULTI = g_func_gen.gen_general_multiplication()
         self.sum_method = sum_method
 
         if self.num_of_steps > 0:

@@ -1,20 +1,19 @@
-from Fractional_laplacian_aproxinmation import FractionalLaplacianAproximation
-from utils_func import FFunction
+from Fractional_laplacian_aproxinmation import FractionalLaplacianAproximationBase
+from utils_func_essential import FFunction
 import numpy as np
 
-class FractionalLaplacianAproximationLinary(FractionalLaplacianAproximation):
+class FractionalLaplacianAproximationLinary(FractionalLaplacianAproximationBase):
 
     def __init__(self, alpha, h, L, func, sum_method, dim = 1):
-        super(FractionalLaplacianAproximationLinary,self).__init__(self, alpha, h
-        , L, func, sum_method,  dim)
+        super().__init__(alpha, h, L, func, sum_method, dim)
 
 
         f_func_gen = FFunction(alpha, h)
         f_func_gen.set_C_alpha_1(self.C_ALPHA_1)
 
         self.F_FUNCTION = f_func_gen.gen_F_fun()
-        self.F_DERIVATIVE_AT_1 = f_func_gen.gen_F_fun_derivative_at_1()
-        self.F_GENERAL_MULTI = f_func_gen.gen_general_multiplication()
+        self.F_DERIVATIVE_AT_1 = f_func_gen.gen_F_derivative_at_1()
+        self.GENERAL_MULTI = f_func_gen.gen_general_multiplication()
         self.sum_method = sum_method
 
         if self.num_of_steps > 0:
@@ -22,8 +21,9 @@ class FractionalLaplacianAproximationLinary(FractionalLaplacianAproximation):
 
 
     def calculate_w_j_params(self):
+        print("Linary")
         w_j_params = np.zeros(int(self.num_of_steps))
-        w_j_params[0] = (1.0 / (2.0 - self.alpha) - self.F_DERIVATIVE_AT_1 +
+        w_j_params[0] = (1.0 / (2.0 - self.ALPHA) - self.F_DERIVATIVE_AT_1 +
         self.F_FUNCTION(2) + self.F_FUNCTION(1))
 
         for j in range(2, int(self.num_of_steps) + 1):

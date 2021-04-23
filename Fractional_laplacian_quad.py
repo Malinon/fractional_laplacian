@@ -4,8 +4,9 @@ import numpy as np
 
 class FractionalLaplacianAproximationQuad(FractionalLaplacianAproximationBase):
 
-    def __init__(self, alpha, h, L, func, sum_method, dim = 1):
-        super(FractionalLaplacianAproximationQuad,self).__init__(self, alpha, h, L, func, sum_method,  dim)
+    def __init__(self, alpha, h, num_of_steps, func, sum_method, dim = 1):
+        super(FractionalLaplacianAproximationQuad,self).__init__(self,
+        alpha, h, num_of_steps, func, sum_method,  dim)
 
         g_func_gen = GFunction(alpha, h)
         g_func_gen.set_C_alpha_1(self.C_ALPHA_1)

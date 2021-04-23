@@ -6,13 +6,13 @@ import scipy.special as ss
 from utils_func_essential import calculate_c_alpha_1
 
 
-def calculators_gen_linear(alpha, L, hs, func):
+def calculators_gen_linear(alpha, num_of_steps, hs, func):
     print(hs)
-    return [FractionalLaplacianAproximationLinary(alpha = alpha, L=L,
+    return [FractionalLaplacianAproximationLinary(alpha = alpha, L=num_of_steps,
         func = func, sum_method =kahan_sum, h = h) for h in hs ]
 
-def calculators_gen_quad(alpha, L, hs, func):
-    return [FractionalLaplacianAproximationQuad(alpha = alpha, L=L,
+def calculators_gen_quad(alpha, num_of_steps, hs, func):
+    return [FractionalLaplacianAproximationQuad(alpha = alpha, L=num_of_steps,
         func = func, sum_method =kahan_sum, h = h) for h in hs ]
 
 

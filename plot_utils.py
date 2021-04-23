@@ -6,13 +6,15 @@ from plotnine import ggplot, aes, geom_point, geom_line, ggtitle
 from utils_func_essential import kahan_sum
 from utils_func_essential import GFunction
 
-def plot_compare_abs_error_zero(calculator_gen ,correct_fun, alpha, hs, L, file_name):
+def plot_compare_abs_error_zero(calculator_gen ,correct_fun, alpha, hs,
+num_of_steps, file_name):
     correct_val = correct_fun(x=0, alpha=alpha)
-    calculators = calculator_gen(alpha, L, hs)
+    calculators = calculator_gen(alpha, num_of_steps, hs)
     xs =  [abs(calc.get_value_at(0)  - correct_val) for calc in calculators]
     df = pd.DataFrame(data={'log(h)': [math.log(h) / math.log(10) for h in hs],
     "absolute error": xs})
-    p = ggplot() + geom_line(data=df, mapping=aes(df['log(h)'], df['absolute error'])) +  ggtitle("alpha=0.8, L=100")
+    p = ggplot() + geom_line(data=df, mapping=aes(df['log(h)'],
+    df['absolute error'])) +  ggtitle("alpha=0.8, L=100")
     p.save(file_name)
 """
 def plot_6_1(L_max, h, file_name, fun, anal_sol):

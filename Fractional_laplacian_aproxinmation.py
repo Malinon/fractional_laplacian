@@ -4,9 +4,9 @@ import numpy as np
 
 class FractionalLaplacianAproximationBase(object):
 
-    def __init__(self, alpha, h, L, func, sum_method, dim = 1):
+    def __init__(self, alpha, h, num_of_steps, func, sum_method, dim = 1):
         self.H = h
-        self.num_of_steps = (L / h) - 1 # Because of float number of steps can be wrong
+        self.num_of_steps = num_of_steps
         self.FUNC = func
         self.ALPHA = alpha
         self.DIM = dim

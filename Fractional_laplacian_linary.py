@@ -4,8 +4,8 @@ import numpy as np
 
 class FractionalLaplacianAproximationLinary(FractionalLaplacianAproximationBase):
 
-    def __init__(self, alpha, h, L, func, sum_method, dim = 1):
-        super().__init__(alpha, h, L, func, sum_method, dim)
+    def __init__(self, alpha, h, num_of_steps, func, sum_method, dim = 1):
+        super().__init__(alpha, h, num_of_steps, func, sum_method, dim)
 
 
         f_func_gen = FFunction(alpha, h)

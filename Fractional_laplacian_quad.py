@@ -4,15 +4,27 @@ import numpy as np
 
 class FractionalLaplacianAproximationQuad(FractionalLaplacianAproximationBase):
 
-    def __init__(self, alpha, h, num_of_steps, func, sum_method, dim = 1):
+    def __init__(self, alpha, h, num_of_steps, func, sum_method, dim = 1, 
+    double_precision = True):
         super(FractionalLaplacianAproximationQuad,self).__init__(self,
-        alpha, h, num_of_steps, func, sum_method,  dim)
+        alpha, h, num_of_steps, func, sum_method, dim, double_precision)
 
         g_func_gen = GFunction(alpha, h)
         g_func_gen.set_C_alpha_1(self.C_ALPHA_1)
 
-        self.G_FUNCTION = g_func_gen.gen_G_fun()
-        self.G_DERIVATIVE = g_func_gen.gen_G_fun_derivative()
+        G_FUNCTION = g_func_gen.gen_G_fun()
+        G_DERIVATIVE = g_func_gen.gen_G_fun_derivative()
+        if double_precision:
+            self.G_FUNCTION = G_FUNCTION
+            self.G_DERIVATIVE = G_DERIVATIVE
+            self.CONST_THREE = 3.0
+            self.CONST_SIX = 6.0
+        else:
+            self.G_FUNCTION = lambda t : G_FUNCTION(np.float32(t))
+            self.G_DERIVATIVE = lambda t : G_FUNCTION(np.float32(t))
+            self.CONST_THREE = np.float32(3.0)
+            self.CONST_SIX = np.float(6.0)
+
         self.G_SECOND_DERIVATIVE_AT_1 = g_func_gen.gen_G_second_derivative_at_1()
         self.GENERAL_MULTI = g_func_gen.gen_general_multiplication()
         self.sum_method = sum_method
@@ -23,16 +35,19 @@ class FractionalLaplacianAproximationQuad(FractionalLaplacianAproximationBase):
 
     def calculate_w_j_params(self):
         w_j_params = np.zeros(int(self.num_of_steps))
-        w_j_params[0] = (1.0 / (2.0 - self.ALPHA) - self.G_SECOND_DERIVATIVE_AT_1 -
-        (self.G_DERIVATIVE(3.0) + 3 * self.G_DERIVATIVE(1.0)) / 2.0 +
-        self.G_FUNCTION(3.0) - self.G_FUNCTION(1.0))
+        w_j_params[0] = (self.CONST_ONE / (self.CONST_TWO - self.ALPHA)
+        - self.G_SECOND_DERIVATIVE_AT_1 - (self.G_DERIVATIVE(self.CONST_THREE)
+        + self.CONST_THREE * self.G_DERIVATIVE(self.CONST_ONE)) / self.CONST_TWO +
+        self.G_FUNCTION(self.CONST_THREE) - self.G_FUNCTION(self.CONST_ONE))
 
         for j in range(2, int(self.num_of_steps) + 1):
             if j % 2 == 0 :
-                w_j_params[j - 1] = 2 * (self.G_DERIVATIVE(j + 1) + self.G_DERIVATIVE(j - 1) -
-                self.G_FUNCTION(j + 1) + self.G_FUNCTION(j - 1))
+                w_j_params[j - 1] = self.CONST_TWO * (self.G_DERIVATIVE(j + 1)
+                + self.G_DERIVATIVE(j - 1) - self.G_FUNCTION(j + 1) +
+                self.G_FUNCTION(j - 1))
             else:
-                w_j_params[j - 1] = -0.5 * (self.G_DERIVATIVE(j + 2) + 6 * self.G_DERIVATIVE(j)
-                + self.G_DERIVATIVE(j - 2)) + self.G_FUNCTION(j + 2) - self.G_FUNCTION(j - 2)
+                w_j_params[j - 1] = -(self.G_DERIVATIVE(j + 2) / self.CONST_TWO +
+                self.CONST_SIX * self.G_DERIVATIVE(j) + self.G_DERIVATIVE(j - 2))
+                + self.G_FUNCTION(j + 2) - self.G_FUNCTION(j - 2)
 
         return w_j_params

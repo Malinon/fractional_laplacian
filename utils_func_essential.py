@@ -12,13 +12,13 @@ def calculate_c_alpha_1( alpha, dim = 1, double_precision = True):
         ONE = np.float32(1.0)
         TWO = np.float32(2.0)
         PI = np.float32(math.pi)
-    return (alpha * special.gamma( (alpha + dim) / TWO ) * (
-            TWO ** (alpha - ONE))) / ((PI ** (dim / TWO))
+    return (alpha * special.gamma( (alpha + dim) / TWO ) * np.power(
+            TWO, (alpha - ONE))) / (np.power(PI, (dim / TWO))
             * special.gamma((TWO - alpha) / TWO))
 
 def kahan_sum(components):
     sum_val = components[0]
-    correct_val = 0.0
+    correct_val = sum_val - sum_val # Because of type
     for i in range(1, len(components)):
         y = components[i] - correct_val
         t = sum_val + y
@@ -47,7 +47,7 @@ class FFunction:
         if self.ALPHA == self.CONST_ONE:
             return lambda t : -np.log(t)
 
-        return lambda t : (t ** (self.CONST_ONE - self.ALPHA)) / (
+        return lambda t : np.power(t, (self.CONST_ONE - self.ALPHA)) / (
                 (self.ALPHA - self.CONST_ONE) * self.ALPHA)
 
     def gen_F_derivative_at_1(self):
@@ -55,7 +55,7 @@ class FFunction:
 
     # All componenets are mupltiplied by C_1_self.ALPHA / h^alpha
     def gen_general_multiplication(self):
-        return (self.H ** (-self.ALPHA)) * self.C_1_ALPHA
+        return np.power(self.H, (-self.ALPHA)) * self.C_1_ALPHA
 
 class GFunction:
     # G will be called with only non-negative args, so abs was deleted
@@ -77,14 +77,14 @@ class GFunction:
         if self.ALPHA == self.CONST_ONE:
             return lambda t : t - t * np.log(t)
 
-        return lambda t : (t ** (self.CONST_TWO - self.ALPHA)) / (
+        return lambda t :np.power(t ,(self.CONST_TWO - self.ALPHA)) / (
                 (self.CONST_TWO - self.ALPHA) * (self.ALPHA - self.CONST_ONE) * self.ALPHA)
 
     def gen_G_fun_derivative(self):
         if self.ALPHA == self.CONST_ONE:
             return lambda t: -np.log(t)
 
-        return lambda t:  (t ** (self.CONST_ONE - self.ALPHA)) / (self.ALPHA *
+        return lambda t:  np.power(t, (self.CONST_ONE - self.ALPHA)) / (self.ALPHA *
         (self.ALPHA - self.CONST_ONE))
 
     def gen_G_second_derivative_at_1(self):
@@ -92,4 +92,4 @@ class GFunction:
 
     # All componenets are mupltiplied by C_1_self.ALPHA / h^alpha
     def gen_general_multiplication(self):
-        return (self.H ** (-self.ALPHA)) * self.C_1_ALPHA
+        return np.power(self.H, (-self.ALPHA)) * self.C_1_ALPHA

@@ -9,7 +9,7 @@ class FractionalLaplacianAproximationQuad(FractionalLaplacianAproximationBase):
         super(FractionalLaplacianAproximationQuad,self).__init__(self,
         alpha, h, num_of_steps, func, sum_method, dim, double_precision)
 
-        g_func_gen = GFunction(alpha, h)
+        g_func_gen = GFunction(self.ALPHA, self.H)
         g_func_gen.set_C_alpha_1(self.C_ALPHA_1)
 
         G_FUNCTION = g_func_gen.gen_G_fun()

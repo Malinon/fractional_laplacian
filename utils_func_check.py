@@ -6,16 +6,17 @@ import scipy.special as ss
 from utils_func_essential import calculate_c_alpha_1
 
 
-def calculators_gen_linear(alpha, num_of_steps, hs, func, double_precision = True):
+def calculators_gen_linear(alpha, num_of_steps_list, hs, func, double_precision = True):
     print(hs)
-    return [FractionalLaplacianAproximationLinary(alpha = alpha, num_of_steps=num_of_steps,
-        func = func, sum_method =kahan_sum, h = h,
-        double_precision = double_precision) for h in hs ]
+    print(num_of_steps_list)
+    return [FractionalLaplacianAproximationLinary(alpha = alpha, num_of_steps=tup[1],
+        func = func, sum_method =kahan_sum, h = tup[0],
+        double_precision = double_precision) for tup in zip(hs,num_of_steps_list)  ]
 
-def calculators_gen_quad(alpha, num_of_steps, hs, func, double_precision = True):
-    return [FractionalLaplacianAproximationQuad(alpha = alpha, num_of_steps=num_of_steps,
-        func = func, sum_method =kahan_sum, h = h,
-        double_precision = double_precision) for h in hs ]
+def calculators_gen_quad(alpha, num_of_steps_list, hs, func, double_precision = True):
+    return [FractionalLaplacianAproximationQuad(alpha = alpha, num_of_steps=tup[2],
+        func = func, sum_method =kahan_sum, h = tup[1],
+        double_precision = double_precision) for tup in zip(hs,num_of_steps_list)]
 
 
 def calculate_part_II(alpha, func, L, x):

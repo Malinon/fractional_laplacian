@@ -7,10 +7,13 @@ from utils_func_essential import kahan_sum
 from utils_func_essential import GFunction
 
 def plot_compare_abs_error_zero(calculator_gen ,correct_fun, alpha, hs,
-num_of_steps, file_name):
+num_of_steps_list, file_name, double_precision):
     correct_val = correct_fun(x=0, alpha=alpha)
-    calculators = calculator_gen(alpha, num_of_steps, hs)
+    print(num_of_steps_list)
+    calculators = calculator_gen(alpha=alpha, num_of_steps_list = num_of_steps_list, hs =hs,
+    double_precision = double_precision)
     xs =  [abs(calc.get_value_at(0)  - correct_val) for calc in calculators]
+    print(xs)
     df = pd.DataFrame(data={'log(h)': [math.log(h) / math.log(10) for h in hs],
     "absolute error": xs})
     p = ggplot() + geom_line(data=df, mapping=aes(df['log(h)'],

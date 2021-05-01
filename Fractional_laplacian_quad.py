@@ -34,20 +34,17 @@ class FractionalLaplacianAproximationQuad(FractionalLaplacianAproximationBase):
 
 
     def calculate_w_j_params(self):
-        w_j_params = np.zeros(int(self.num_of_steps))
-        w_j_params[0] = (self.CONST_ONE / (self.CONST_TWO - self.ALPHA)
+        self.w_j_params[1] = (self.CONST_ONE / (self.CONST_TWO - self.ALPHA)
         - self.G_SECOND_DERIVATIVE_AT_1 - (self.G_DERIVATIVE(self.CONST_THREE)
         + self.CONST_THREE * self.G_DERIVATIVE(self.CONST_ONE)) / self.CONST_TWO +
         self.G_FUNCTION(self.CONST_THREE) - self.G_FUNCTION(self.CONST_ONE))
 
-        for j in range(2, int(self.num_of_steps) + 1):
+        for j in range(2, self.num_of_steps + 1):
             if j % 2 == 0 :
-                w_j_params[j - 1] = self.CONST_TWO * (self.G_DERIVATIVE(j + 1)
+                self.w_j_params[j] = self.CONST_TWO * (self.G_DERIVATIVE(j + 1)
                 + self.G_DERIVATIVE(j - 1) - self.G_FUNCTION(j + 1) +
                 self.G_FUNCTION(j - 1))
             else:
-                w_j_params[j - 1] = -(self.G_DERIVATIVE(j + 2) / self.CONST_TWO +
+                self.w_j_params[j] = -(self.G_DERIVATIVE(j + 2) / self.CONST_TWO +
                 self.CONST_SIX * self.G_DERIVATIVE(j) + self.G_DERIVATIVE(j - 2))
                 + self.G_FUNCTION(j + 2) - self.G_FUNCTION(j - 2)
-
-        return w_j_params

@@ -13,12 +13,13 @@ num_of_steps_list, file_name, double_precision):
     calculators = calculator_gen(alpha=alpha, num_of_steps_list = num_of_steps_list, hs =hs,
     double_precision = double_precision)
     xs =  [abs(calc.get_value_at(0)  - correct_val) for calc in calculators]
-    print(xs)
     df = pd.DataFrame(data={'log(h)': [math.log(h) / math.log(10) for h in hs],
     "absolute error": xs})
     p = ggplot() + geom_line(data=df, mapping=aes(df['log(h)'],
     df['absolute error'])) +  ggtitle("alpha=0.8, L=100")
     p.save(file_name)
+
+
 """
 def plot_6_1(L_max, h, file_name, fun, anal_sol):
     args = [h * i for i in range(1, int(L_max / h))]

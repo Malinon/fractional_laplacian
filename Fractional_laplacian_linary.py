@@ -10,8 +10,7 @@ class FractionalLaplacianAproximationLinary(FractionalLaplacianAproximationBase)
         super().__init__(alpha, h, num_of_steps, func, sum_method, dim, double_precision)
 
 
-        f_func_gen = FFunction(self.ALPHA, self.H)
-        f_func_gen.set_C_alpha_1(self.C_ALPHA_1)
+        f_func_gen = FFunction(self.ALPHA, self.H, self.C_ALPHA_1)
 
         f_fun = f_func_gen.gen_F_fun()
         if double_precision:

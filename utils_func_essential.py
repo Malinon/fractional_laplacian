@@ -29,7 +29,7 @@ def kahan_sum(components):
 
 class FFunction:
     # G will be called with only non-negative args, so abs was deleted
-    def __init__(self, alpha, h, double_precision = True):
+    def __init__(self, alpha, h, c_1_alpha, double_precision = True):
         if double_precision:
             self.CONST_ONE = 1.0
             self.CONST_TWO = 2.0
@@ -37,7 +37,7 @@ class FFunction:
             self.CONST_ONE = np.float32(1)
             self.CONST_TWO = np.float32(2)
         self.ALPHA = alpha
-        self.C_1_ALPHA = -self.CONST_ONE
+        self.C_1_ALPHA = c_1_alpha
         self.H = h
 
     def set_C_alpha_1(self, C_ALPHA_1):
@@ -59,7 +59,7 @@ class FFunction:
 
 class GFunction:
     # G will be called with only non-negative args, so abs was deleted
-    def __init__(self, alpha, h, double_precision = True):
+    def __init__(self, alpha, h, c_alpha_1, double_precision = True):
         if double_precision:
             self.CONST_ONE = 1.0
             self.CONST_TWO = 2.0
@@ -67,11 +67,9 @@ class GFunction:
             self.CONST_ONE = np.float32(1)
             self.CONST_TWO = np.float32(2)
         self.ALPHA = alpha
-        self.C_1_ALPHA = -self.CONST_ONE
+        self.C_1_ALPHA = c_alpha_1
         self.H = h
 
-    def set_C_alpha_1(self, C_ALPHA_1):
-        self.C_1_ALPHA = C_ALPHA_1
 
     def gen_G_fun(self):
         if self.ALPHA == self.CONST_ONE:

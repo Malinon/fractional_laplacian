@@ -50,8 +50,8 @@ class FFunction:
         return lambda t : np.power(t, (self.CONST_ONE - self.ALPHA)) / (
                 (self.ALPHA - self.CONST_ONE) * self.ALPHA)
 
-    def gen_F_derivative_at_1(self):
-        return -self.CONST_ONE / self.ALPHA
+    def gen_F_derivative(self):
+        return lambda t: -self.CONST_ONE / (self.ALPHA * (t ** self.ALPHA))
 
     # All componenets are mupltiplied by C_1_self.ALPHA / h^alpha
     def gen_general_multiplication(self):
@@ -88,6 +88,6 @@ class GFunction:
     def gen_G_second_derivative_at_1(self):
         return -self.CONST_ONE / self.ALPHA
 
-    # All componenets are mupltiplied by C_1_self.ALPHA / h^alpha
+    # All componenets are mupltiplied by C_1_self.ALPHA / h^-alpha
     def gen_general_multiplication(self):
         return np.power(self.H, (-self.ALPHA)) * self.C_1_ALPHA

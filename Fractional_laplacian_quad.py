@@ -1,10 +1,11 @@
 from Fractional_laplacian_aproxinmation import FractionalLaplacianAproximationBase
+from utils_func_essential import kahan_sum
 from utils_func_essential import GFunction
 import numpy as np
 
 class FractionalLaplacianAproximationQuad(FractionalLaplacianAproximationBase):
 
-    def __init__(self, alpha, h, num_of_steps, func, sum_method, dim = 1, 
+    def __init__(self, alpha, h, num_of_steps, func, sum_method = kahan_sum, dim = 1, 
     double_precision = True):
         super().__init__(alpha, h, num_of_steps, func, sum_method, dim, double_precision)
 
@@ -31,8 +32,9 @@ class FractionalLaplacianAproximationQuad(FractionalLaplacianAproximationBase):
 
 
     def calculate_w_j_params(self):
-        self.w_j_params[1] = (self.CONST_ONE / (self.CONST_TWO - self.ALPHA)
-        - self.G_SECOND_DERIVATIVE_AT_1 - (self.G_DERIVATIVE(self.CONST_THREE)
+        # C_alpha_1 / (2 - alpha) is counted in singular part
+        self.w_j_params[1] = (- self.G_SECOND_DERIVATIVE_AT_1 -
+        (self.G_DERIVATIVE(self.CONST_THREE)
         + self.CONST_THREE * self.G_DERIVATIVE(self.CONST_ONE)) / self.CONST_TWO +
         self.G_FUNCTION(self.CONST_THREE) - self.G_FUNCTION(self.CONST_ONE))
 

@@ -85,8 +85,8 @@ class GFunction:
         return lambda t:  np.power(t, (self.CONST_ONE - self.ALPHA)) / (self.ALPHA *
         (self.ALPHA - self.CONST_ONE))
 
-    def gen_G_second_derivative_at_1(self):
-        return -self.CONST_ONE / self.ALPHA
+    def gen_G_second_derivative(self):
+        return lambda t:  - np.power(t, (- self.ALPHA)) / (self.ALPHA )
 
     # All componenets are mupltiplied by C_1_self.ALPHA / h^-alpha
     def gen_general_multiplication(self):

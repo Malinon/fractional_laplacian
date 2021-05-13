@@ -1,24 +1,42 @@
 import numpy as np
 import pandas as pd
+from functools import reduce
 import math
 from plotnine import ggplot, aes, geom_point, geom_line, ggtitle
 #from Fractional_laplacian_aproxinmation import FractionalLaplacianAproximation
 from utils_func_essential import kahan_sum
 from utils_func_essential import GFunction
 
-def plot_compare_abs_error_zero(calculator_gen ,correct_fun, alpha, hs,
-num_of_steps_list, file_name, double_precision):
-    correct_val = correct_fun(x=0, alpha=alpha)
-    calculators = calculator_gen(alpha=alpha, num_of_steps_list = num_of_steps_list, hs =hs,
-    double_precision = double_precision)
-    xs =  [abs(calc.get_value_at(0)  - correct_val) for calc in calculators]
-    print(xs)
-    df = pd.DataFrame(data={'log(h)': [math.log(h) / math.log(10) for h in hs],
-    "absolute error": xs})
-    p = ggplot() + geom_line(data=df, mapping=aes(df['log(h)'],
-    df['absolute error'])) +  ggtitle("alpha=0.8, L=100")
-    p.save(file_name)
+LOGGED_H_LABEL = 'log(h)'
+LOGGED_ERROR_LABEL = 'logged absolute error'
+METHOD_LABEL = 'variant'
 
+def plot_compare_abs_error_zero(calculator_gens ,correct_fun, alpha, hs,
+num_of_steps_list, file_name, double_precision, methods_names, title =""):
+    def decimal_log(x):
+        return math.log(x) / math.log(10)
+
+    correct_val = correct_fun(x=0, alpha=alpha)
+    calculators_mat = [calc_gen(alpha=alpha, num_of_steps_list = num_of_steps_list, hs =hs,
+    double_precision = double_precision) for calc_gen in calculator_gens]
+
+    errors_logged =  [ [decimal_log(abs(calc.get_value_at(0)  - correct_val))
+    for calc in calculators] for calculators in calculators_mat]
+
+    concat = (lambda a, b: a+b)
+    errors_logged = reduce(concat, errors_logged)
+    methods_names = reduce(concat, [[name] * len(hs) for name in methods_names])
+
+    print(errors_logged)
+    df = pd.DataFrame(data={LOGGED_H_LABEL : [decimal_log(h) for h in hs] * len(calculator_gens),
+    LOGGED_ERROR_LABEL: errors_logged, METHOD_LABEL: methods_names})
+    plot_df_and_save(df, file_name, title)
+
+
+def plot_df_and_save(df, file_name, title):
+    p = ggplot(data = df, mapping=aes(x = LOGGED_H_LABEL, y = LOGGED_ERROR_LABEL,
+    colour = METHOD_LABEL)) + geom_line() + geom_point() 
+    p.save(file_name)
 
 """
 def plot_6_1(L_max, h, file_name, fun, anal_sol):
